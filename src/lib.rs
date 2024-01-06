@@ -195,6 +195,13 @@ pub mod shared_memory {
         }
 
         pub fn write_data(&self, data: &[u8]) {
+            let data_size = data.len();
+            let offset = self.size() as usize - data_size;
+
+            if offset < data_size {
+                eprintln!("Error: Attempted to write data with a size larger than the shared memory region");
+                return;
+            }
             if let Some(size) = self.size.checked_sub(data.len() as i32) {
                 let dest = self.address() as *mut u8;
                 unsafe {
