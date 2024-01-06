@@ -59,7 +59,6 @@ pub mod shared_memory {
             unsafe {
                 let c_str = CString::from_raw(self.name as *mut c_char);
                 let str_slice = c_str.to_str().unwrap();
-                let _ = c_str.into_raw();
                 str_slice
             }
         }
