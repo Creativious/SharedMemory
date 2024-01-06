@@ -198,12 +198,28 @@ pub mod shared_memory {
             let dest = self.address() as *mut u8;
             unsafe {
                 ptr::copy_nonoverlapping(data.as_ptr(), dest, data.len());
+                ptr::write_bytes(dest.add(data.len()), 0, self.size() as usize - data.len());
             }
         }
 
-        pub fn read_data(&self, size: usize) -> &[u8] {
+        pub fn read_data(&self) -> &[u8] {
+            let dest = self.address() as *const u8;
+            let mut size = self.size() as usize;
+
+            // Check for empty bits at the end of the data
             unsafe {
-                std::slice::from_raw_parts(self.address() as *const u8, size)
+                let mut idx = size - 1;
+                while idx >= 0 {
+                    if *dest.add(idx) != 0 {
+                        break;
+                    }
+                    idx -= 1;
+                }
+                size = idx + 1;
+            }
+
+            unsafe {
+                std::slice::from_raw_parts(dest, size)
             }
         }
 
