@@ -55,11 +55,11 @@ pub mod shared_memory {
             self.size
         }
 
-        pub fn name(&self) -> &str {
+        pub fn name(&self) -> String {
             unsafe {
                 let c_str = CString::from_raw(self.name as *mut c_char);
                 let str_slice = c_str.to_str().unwrap();
-                str_slice
+                str_slice.to_string()
             }
         }
 
