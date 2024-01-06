@@ -1,3 +1,4 @@
+Example on how to use the library
 ```rust
 use shared_memory::shared_memory::SharedMemory;
 
