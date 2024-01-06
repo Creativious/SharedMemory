@@ -195,10 +195,14 @@ pub mod shared_memory {
         }
 
         pub fn write_data(&self, data: &[u8]) {
-            let dest = self.address() as *mut u8;
-            unsafe {
-                ptr::copy_nonoverlapping(data.as_ptr(), dest, data.len());
-                ptr::write_bytes(dest.add(data.len()), 0, self.size() as usize - data.len());
+            if let Some(size) = self.size.checked_sub(data.len() as i32) {
+                let dest = self.address() as *mut u8;
+                unsafe {
+                    ptr::copy_nonoverlapping(data.as_ptr(), dest, data.len());
+                    ptr::write_bytes(dest.add(data.len()), 0, size as usize - data.len());
+                }
+            } else {
+                eprintln!("Error: Attempted to write data with a size larger than the shared memory region");
             }
         }
 
