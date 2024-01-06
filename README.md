@@ -6,3 +6,7 @@ It should be completely compatible with the other repo's implementation except I
 But more or less they should be compatible
 
 I'll add documentation later, though I'm only currently only planning on using this for myself
+
+# Goals
+- Ensure compatability with [JavaSharedMemory](https://github.com/ShirasawaSama/JavaSharedMemory)
+- Add some abstraction to make it easier to send and receive data
