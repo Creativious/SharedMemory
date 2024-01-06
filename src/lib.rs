@@ -223,11 +223,11 @@ pub mod shared_memory {
             }
         }
 
-        fn write_string(&mut self, data: &str) {
+        pub fn write_string(&mut self, data: &str) {
             self.write_data(data.as_bytes());
         }
 
-        fn read_string(&self) -> String {
+        pub fn read_string(&self) -> String {
             let bytes = self.read_data();
             String::from_utf8_lossy(&bytes).to_string()
         }
