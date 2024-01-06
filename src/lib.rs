@@ -194,19 +194,19 @@ pub mod shared_memory {
             Ok(shared_memory)
         }
 
-        pub fn write_data(&mut self, data: &[u8]) {
+        pub fn write_data(&self, data: &[u8]) {
+            let dest = self.address() as *mut u8;
             unsafe {
-                #[cfg(target_os = "windows")]
-                {
-                    ptr::copy_nonoverlapping(data.as_ptr(), self.address() as *mut u8, data.len());
-                }
-
-                #[cfg(target_os = "linux")]
-                {
-                    libc::memcpy(self.address() as *mut libc::c_void, data.as_ptr() as *const libc::c_void, data.len());
-                }
+                ptr::copy_nonoverlapping(data.as_ptr(), dest, data.len());
             }
         }
+
+        pub fn read_data(&self, size: usize) -> &[u8] {
+            unsafe {
+                std::slice::from_raw_parts(self.address() as *const u8, size)
+            }
+        }
+
 
 
         #[cfg(target_os = "linux")]
