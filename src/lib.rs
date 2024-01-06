@@ -194,6 +194,21 @@ pub mod shared_memory {
             Ok(shared_memory)
         }
 
+        pub fn write_data(&mut self, data: &[u8]) {
+            unsafe {
+                #[cfg(target_os = "windows")]
+                {
+                    ptr::copy_nonoverlapping(data.as_ptr(), self.address() as *mut u8, data.len());
+                }
+
+                #[cfg(target_os = "linux")]
+                {
+                    libc::memcpy(self.address() as *mut libc::c_void, data.as_ptr() as *const libc::c_void, data.len());
+                }
+            }
+        }
+
+
         #[cfg(target_os = "linux")]
         pub fn open(name: &str, size: i32) -> Result<Self, io::Error> {
             let name_c = CString::new(name).expect("CString::new failed");
