@@ -31,7 +31,7 @@ pub mod shared_memory {
     use winapi::shared::basetsd::*;
 
     #[cfg(target_os = "linux")]
-    use libc::{c_int, c_void as lin_c_void, size_t, shm_open, mmap, PROT_READ, PROT_WRITE, MAP_SHARED, O_RDWR, O_CREAT, O_EXCL, close, ftruncate, munmap, shm_unlink};
+    use libc::{off_t, c_int, c_void as lin_c_void, size_t, shm_open, mmap, PROT_READ, PROT_WRITE, MAP_SHARED, O_RDWR, O_CREAT, O_EXCL, close, ftruncate, munmap, shm_unlink};
 
     use std::os::raw::{c_char};
 
