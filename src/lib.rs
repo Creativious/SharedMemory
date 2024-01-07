@@ -115,6 +115,14 @@ pub mod shared_memory {
 
         #[cfg(target_os = "linux")]
         pub fn create(name: &str, size: i32) -> Result<Self, io::Error> {
+            // In linux on program close shared memory areas don't automatically get deleted so if it already exists just pass along arguments to the open command
+            let open_test = SharedMemory::open(name, size);
+            if open_test.is_ok() {
+                // reset the data just in case
+                let t = open_test.unwrap().reset();
+                // return the shared memory
+                return Ok(t);
+            }
             let name_c = CString::new(name).expect("CString::new failed");
             let fd = unsafe {
                 shm_open(
@@ -242,6 +250,11 @@ pub mod shared_memory {
         pub fn read_string(&self) -> String {
             let bytes = self.read_data();
             String::from_utf8_lossy(&bytes).to_string()
+        }
+
+        pub fn reset(&self) {
+            let empty_bytes = vec![0u8; self.size as usize];
+            self.write_data(empty_bytes.as_slice());
         }
 
 
